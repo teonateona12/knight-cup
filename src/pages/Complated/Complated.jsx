@@ -1,11 +1,23 @@
 import React from "react";
+import backBoard from "../../assets/unsplash.jpg";
+import crown from "../../assets/Knight cup logo.svg";
+import rocket from "../../assets/Succsess rocket.jpg";
 
 export default function Complated() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-green-600 underline">
-        Hello world!
-      </h1>
+    <div className="flex ">
+      <div className="w-1/2 ">
+        <div className="bg-[#7025FB] py-[30px] pl-[60px]">
+          <img src={crown} alt="" />
+        </div>
+        <img src={backBoard} alt="" />
+      </div>
+      <div className="w-1/2 flex flex-col items-center justify-center">
+        <img src={rocket} alt="" />
+        <p className="text-[36px] font-nunito text-[#000] leading-[150%] mt-[16px]">
+          Onboarding completed!
+        </p>
+      </div>
     </div>
   );
 }
