@@ -1,5 +1,5 @@
 import React from "react";
-import HeaderLogo from "../../assets/Knight cup logo.svg";
+import HeaderLogo from "../assets/Knight cup logo.svg";
 
 function Header() {
   return (

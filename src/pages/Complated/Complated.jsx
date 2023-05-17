@@ -2,14 +2,16 @@ import React from "react";
 import backBoard from "../../assets/unsplash.jpg";
 import crown from "../../assets/Knight cup logo.svg";
 import rocket from "../../assets/Succsess rocket.jpg";
+import Header from "../../components/Header";
 
 export default function Complated() {
   return (
     <div className="flex ">
       <div className="w-[48%] ">
-        <div className="bg-[#7025FB] py-[30px] pl-[60px]">
+        <Header></Header>
+        {/*<div className="bg-[#7025FB] py-[30px] pl-[60px]">
           <img src={crown} alt="" />
-        </div>
+        </div>*/}
         <img src={backBoard} alt="" />
       </div>
       <div className="w-[52%] flex flex-col items-center justify-center">
