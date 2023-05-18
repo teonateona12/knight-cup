@@ -7,7 +7,7 @@ export default function Complated() {
   return (
     <div className="flex ">
       <div className="w-[48%] ">
-        <Header></Header>
+        <Header />
         <img src={backBoard} alt="" />
       </div>
       <div className="w-[52%] flex flex-col items-center justify-center">
