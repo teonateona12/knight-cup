@@ -1,11 +1,5 @@
 import Complated from "./pages/Complated/Complated";
 
-function App() {
-  return (
-    <>
-      <Complated></Complated>
-    </>
-  );
-}
+function App() {}
 
 export default App;
