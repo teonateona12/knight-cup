@@ -1,14 +1,12 @@
 import landing from "../../assets/landing.svg"
 import arrow from "../../assets/arrow.svg"
-import chess from "../../assets/chess.svg"
+
+import Header from "../../components/Header";
 export default function Landing() {
   return (
     <div className="flex" >
       <div className="w-[48%]">
-        <div className="flex items-center text-white h-[84px] bg-[#7025FB] px-[64px]">
-          <img src={chess} alt="Chess Icon" className="mr-2"/>
-          <span className="text-2xl">Redberry Knight Cup</span>
-        </div>
+        <Header/>
         <img src={landing} alt="landing img"/>
       </div>
       <div className="text-white text-7xl w-[52%] bg-[#FD5334]  px-[265px] py-[265px] pl-[85px] pr-[254px]">
