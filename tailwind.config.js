@@ -5,6 +5,10 @@ export default {
     extend: {
       fontFamily: {
         nunito: ["Nunito", "sans-serif"],
+        "open-sans": ["Open Sans", "sans-serif"],
+      },
+      colors: {
+        black: "#212529",
       },
     },
   },
