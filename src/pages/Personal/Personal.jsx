@@ -2,8 +2,24 @@ import React from "react";
 import Header from "../../components/Header";
 import ChessFigures from "../../assets/chess-figures.jpg";
 import Check from "../../assets/check.svg";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import loginSchema from "../../loginSchema";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Personal() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, dirtyFields, touchedFields },
+  } = useForm({ resolver: yupResolver(loginSchema) });
+
+  const onSubmit = async (data) => {
+    console.log(data);
+  };
+  console.log(dirtyFields);
+  console.log(errors.name);
   return (
     <div className="flex">
       <div className="relative w-[48%]">
@@ -25,8 +41,8 @@ export default function Personal() {
             Start creating your account
           </h3>
         </div>
-        <div>
-          <div className="flex items-center pl-[107px] mt-[60px]">
+        <div className="relative">
+          <div className="flex items-center pl-[107px] mt-[60px] ">
             <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
               1
             </p>
@@ -47,50 +63,99 @@ export default function Personal() {
               This is basic informaton fields
             </p>
           </div>
-          <form action="" className="flex gap-10 flex-col pl-12 pr-[174px]">
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex gap-10 flex-col pl-12 pr-[174px]"
+          >
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.name
+                  ? "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
+                  : null
+              }`}
+            >
               <input
                 type="text"
+                id="name"
                 placeholder="Name *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none hover:[#fff] ${
+                  errors.name ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("name")}
               />
-              <img src={Check} alt="" className="hidden mx-5" />
+              {errors.name ? <p>{errors.name.message}</p> : null}
+              {/*<img
+                src={Check}
+                alt=""
+                className={errors.name ? "hidden" : "block"}
+              />*/}
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.email
+                  ? "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
+                  : null
+              }`}
+            >
               <input
                 type="email"
                 placeholder="Email address *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none ${
+                  errors.email ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("email")}
               />
+              {errors.email ? <p>{errors.email.message}</p> : null}
               <img src={Check} alt="" className="hidden mx-5" />
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.tel ? "bg-light-red" : null
+              }`}
+            >
               <input
                 type="tel"
                 placeholder="Phone number *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none ${
+                  errors.tel ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("tel")}
               />
+              {errors.tel ? <p>{errors.tel.message}</p> : null}
               <img src={Check} alt="" className="hidden mx-5" />
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.date ? "bg-light-red" : null
+              }`}
+            >
               <input
-                type="number"
+                /*type="date"*/
                 placeholder="Date of birth *"
-                required
-                className="w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield]"
+                className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
+                  errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("date")}
               />
+              {errors.date ? <p>{errors.date.message}</p> : null}
               <img src={Check} alt="" className="hidden mx-5" />
             </div>
             <div className="flex items-center justify-between font-open-sans font-normal text-xl/[27px]">
-              <button className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]">
+              {/* <button className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]">
+                <Link to={"/"}>Back</Link>
+              </button>*/}
+
+              <Link
+                to={"/"}
+                className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]"
+              >
                 Back
-              </button>
+              </Link>
+
               <button className="flex gap-3 bg-black text-[#fff] px-6 py-[13px] rounded-lg">
                 Next
                 <svg
