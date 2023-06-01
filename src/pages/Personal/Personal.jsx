@@ -8,17 +8,24 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchema from "../../loginSchema";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Personal() {
+  const [cencel, SetCancel] = useState(false);
+  const [click, setClick] = useState(false);
+
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors, dirtyFields },
   } = useForm({ resolver: yupResolver(loginSchema), mode: "onChange" });
   console.log(dirtyFields);
+
   const onSubmit = async (data) => {
     console.log(data);
+    navigate("/experience");
   };
 
   console.log(errors.name);
@@ -175,7 +182,7 @@ export default function Personal() {
                 }`}
                 {...register("date")}
               />
-              {errors.date ? <p>{errors.date.message}</p> : null}
+              {/*errors.date ? <p>{errors.date.message}</p> : null*/}
               {errors.date && dirtyFields.date ? (
                 <div className="absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
                   <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
