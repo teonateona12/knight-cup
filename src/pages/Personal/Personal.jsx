@@ -2,6 +2,8 @@ import React from "react";
 import Header from "../../components/Header";
 import ChessFigures from "../../assets/chess-figures.jpg";
 import Check from "../../assets/check.svg";
+import Error from "../../assets/error.svg";
+import Cancel from "../../assets/cancel.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchema from "../../loginSchema";
@@ -12,13 +14,13 @@ export default function Personal() {
   const {
     register,
     handleSubmit,
-    formState: { errors, dirtyFields, touchedFields },
-  } = useForm({ resolver: yupResolver(loginSchema) });
-
+    formState: { errors, dirtyFields },
+  } = useForm({ resolver: yupResolver(loginSchema), mode: "onChange" });
+  console.log(dirtyFields);
   const onSubmit = async (data) => {
     console.log(data);
   };
-  console.log(dirtyFields);
+
   console.log(errors.name);
   return (
     <div className="flex">
@@ -84,12 +86,20 @@ export default function Personal() {
                 }`}
                 {...register("name")}
               />
-              {errors.name ? <p>{errors.name.message}</p> : null}
-              {/*<img
-                src={Check}
-                alt=""
-                className={errors.name ? "hidden" : "block"}
-              />*/}
+              {errors.name && dirtyFields.name ? (
+                <div className="absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid name</p>
+                    <img src={Cancel} alt="" className="ml-auto" />
+                  </div>
+                  <p className="p-3 ">{errors.name.message}</p>
+                </div>
+              ) : null}
+
+              {!errors.name && dirtyFields.name ? (
+                <img src={Check} alt="" className=" mx-5" />
+              ) : null}
             </div>
 
             <div
@@ -107,8 +117,20 @@ export default function Personal() {
                 }`}
                 {...register("email")}
               />
-              {errors.email ? <p>{errors.email.message}</p> : null}
-              <img src={Check} alt="" className="hidden mx-5" />
+
+              {errors.email && dirtyFields.email ? (
+                <div className="absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid email</p>
+                    <img src={Cancel} alt="" className="ml-auto" />
+                  </div>
+                  <p className="p-3 ">{errors.email.message}</p>
+                </div>
+              ) : null}
+              {!errors.email && dirtyFields.email ? (
+                <img src={Check} alt="" className="mx-5" />
+              ) : null}
             </div>
 
             <div
@@ -124,8 +146,20 @@ export default function Personal() {
                 }`}
                 {...register("tel")}
               />
-              {errors.tel ? <p>{errors.tel.message}</p> : null}
-              <img src={Check} alt="" className="hidden mx-5" />
+
+              {errors.tel && dirtyFields.tel ? (
+                <div className="absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid phone number</p>
+                    <img src={Cancel} alt="" className="ml-auto" />
+                  </div>
+                  <p className="p-3 ">{errors.tel.message}</p>
+                </div>
+              ) : null}
+              {!errors.tel && dirtyFields.tel ? (
+                <img src={Check} alt="" className="mx-5" />
+              ) : null}
             </div>
 
             <div
@@ -142,7 +176,19 @@ export default function Personal() {
                 {...register("date")}
               />
               {errors.date ? <p>{errors.date.message}</p> : null}
-              <img src={Check} alt="" className="hidden mx-5" />
+              {errors.date && dirtyFields.date ? (
+                <div className="absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid date</p>
+                    <img src={Cancel} alt="" className="ml-auto" />
+                  </div>
+                  <p className="p-3 ">{errors.date.message}</p>
+                </div>
+              ) : null}
+              {!errors.date && dirtyFields.date ? (
+                <img src={Check} alt="" className=" mx-5" />
+              ) : null}
             </div>
             <div className="flex items-center justify-between font-open-sans font-normal text-xl/[27px]">
               {/* <button className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]">
