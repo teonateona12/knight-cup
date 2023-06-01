@@ -75,7 +75,7 @@ export default function Personal() {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex gap-10 flex-col pl-12 pr-[174px]"
+            className="flex gap-11 flex-col pl-12 pr-[174px]"
           >
             <div
               className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
