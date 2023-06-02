@@ -1,14 +1,16 @@
 import React from "react";
 import Header from "../../components/Header";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import loginSchema from "../../loginSchema";
 import ChessFigures from "../../assets/chess-figures.jpg";
 import Check from "../../assets/check.svg";
 import Error from "../../assets/error.svg";
 import Cancel from "../../assets/cancel.svg";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import loginSchema from "../../loginSchema";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import DoubleCheck from "../../assets/check.png";
 
 export default function Personal() {
   const [cencel, SetCancel] = useState(false);
@@ -52,11 +54,27 @@ export default function Personal() {
         </div>
         <div className="relative">
           <div className="flex items-center pl-[107px] mt-[60px] ">
-            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
+            {/* <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
               1
-            </p>
+            </p>*/}
+            {!errors.name &&
+            dirtyFields.name &&
+            !errors.email &&
+            dirtyFields.email &&
+            !errors.tel &&
+            dirtyFields.tel &&
+            !errors.date &&
+            dirtyFields.date ? (
+              <div className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg bg-[#E9FAF1]">
+                <img src={DoubleCheck} />
+              </div>
+            ) : (
+              <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
+                1
+              </p>
+            )}
             <div className="w-[174px] h-px bg-[#B9B4C34D]/[0.3]"></div>
-            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
+            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px] bg-[#F5F5F5]">
               2
             </p>
           </div>
