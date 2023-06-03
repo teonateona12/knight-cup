@@ -26,7 +26,6 @@ export default function Personal() {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, dirtyFields },
   } = useForm({ resolver: yupResolver(loginSchema) });
   console.log(dirtyFields);
@@ -132,9 +131,6 @@ export default function Personal() {
                 </div>
               ) : null}
 
-              {/*!errors.name && dirtyFields.name ? (
-                <img src={Check} alt="" className=" mx-5" />
-              ) : null*/}
               {!errors.name && click ? (
                 <img src={Check} alt="" className=" mx-5" />
               ) : null}
