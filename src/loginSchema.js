@@ -1,5 +1,5 @@
 import * as yup from "yup";
-
+let emailRegex = /\w+@redberry.ge$/;
 const loginSchema = yup.object({
   name: yup
     .string()
@@ -8,8 +8,9 @@ const loginSchema = yup.object({
   email: yup
     .string()
     .required("Required email")
+    .email()
     .matches(
-      /^[A-Za-z0-9]+@redberry\.ge$/,
+      emailRegex,
       "Please enter valid email address, ex: niKa7@redberry.ge"
     ),
   tel: yup
