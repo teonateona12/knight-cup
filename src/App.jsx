@@ -4,7 +4,9 @@ import Experience from "./pages/Experience/Experience";
 import Landing from "./pages/Landing/Landing";
 import Personal from "./pages/Personal/Personal";
 
+
 export default function App() {
+ 
   return (
     <Router>
       <Routes>

@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { components } from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useDispatch } from 'react-redux'; // import useDispatch
 
 
 import Header from "../../components/Header";
@@ -15,6 +16,9 @@ import check from "../../assets/check.png";
 import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
+import { updateName, updateEmail, updatePhone, updateDateOfBirth, updateExperienceLevel, updateAlreadyParticipated, updateCharacterId } from '../../store/userSlice';
+
+
 
 const schema = yup.object().shape({
   levelOfKnowledge: yup.object().required('Level of Knowledge is required'),
@@ -68,6 +72,8 @@ const DropdownIndicator = (props) => {
 
 export default function Experience() {
   const navigate = useNavigate(); 
+  const dispatch = useDispatch(); 
+  
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -89,14 +95,44 @@ export default function Experience() {
   ];
 
 
-  const { handleSubmit, control, formState: { errors } } = useForm({
+  const { handleSubmit, control, formState: { errors }, reset } = useForm({
     resolver: yupResolver(schema),
-  });
+    defaultValues: {
+      levelOfKnowledge: JSON.parse(localStorage.getItem('levelOfKnowledge')),
+      chooseYourCharacter: JSON.parse(localStorage.getItem('chooseYourCharacter')),
+     
+    }
+});
+
+
+
 
   const onSubmit = async (data) => {
+    dispatch(updateName(data.name));
+    dispatch(updateEmail(data.email));
+    dispatch(updatePhone(data.phone));
+    dispatch(updateDateOfBirth(data.date_of_birth));
+    dispatch(updateExperienceLevel(data.levelOfKnowledge.value));
+    dispatch(updateAlreadyParticipated(data.participation === 'yes'));
+    dispatch(updateCharacterId(data.chooseYourCharacter.value));
+
+    localStorage.setItem('levelOfKnowledge', JSON.stringify(data.levelOfKnowledge));
+    localStorage.setItem('chooseYourCharacter', JSON.stringify(data.chooseYourCharacter));
+    localStorage.setItem('participation', data.participation);
+
+
+
     console.log(data);
     navigate('/completed'); // Navigate to completed page after form submission
   };
+  React.useEffect(() => {
+    const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
+    const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
+    const participation = localStorage.getItem('participation'); 
+
+    reset({ levelOfKnowledge, chooseYourCharacter, participation });
+}, [reset]);
+  
 
   return (
     <div className="flex">
@@ -209,40 +245,43 @@ export default function Experience() {
           <span>Have you participated in the Redberry Championship?</span>
           <span className="text-red-500 ml-[4px]"> *</span>
           <Controller
-              control={control}
-              name="participation"
-              defaultValue=""
-              rules={{ required: 'This field is required' }}
-              render={({ field }) => (
-                <div className="flex items-center mt-[20px]">
-                  <div className="mr-4">
-                    <input
-                      {...field}
-                      type="radio"
-                      id="yesOption"
-                      value="yes"
-                      className="form-radio text-blue-500 h-4 w-4"
-                    />
-                    <label htmlFor="yesOption" className="ml-2 text-sm">
-                      Yes
-                    </label>
-                  </div>
-                  <div>
-                    <input
-                      {...field}
-                      type="radio"
-                      id="noOption"
-                      value="no"
-                      className="form-radio text-blue-500 h-4 w-4"
-                    />
-                    <label htmlFor="noOption" className="ml-2 text-sm">
-                      No
-                    </label>
-                  </div>
+            control={control}
+            name="participation"
+            defaultValue=""
+            rules={{ required: 'This field is required' }}
+            render={({ field }) => (
+              <div className="flex items-center mt-[20px]">
+                <div className="mr-4">
+                  <input
+                    {...field}
+                    type="radio"
+                    id="yesOption"
+                    value="yes"
+                    checked={field.value === 'yes'} // this will check if the value of the radio button is 'yes'
+                    className="form-radio text-blue-500 h-4 w-4"
+                  />
+                  <label htmlFor="yesOption" className="ml-2 text-sm">
+                    Yes
+                  </label>
                 </div>
-              )}
-            />
-            {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
+                <div>
+                  <input
+                    {...field}
+                    type="radio"
+                    id="noOption"
+                    value="no"
+                    checked={field.value === 'no'} // this will check if the value of the radio button is 'no'
+                    className="form-radio text-blue-500 h-4 w-4"
+                  />
+                  <label htmlFor="noOption" className="ml-2 text-sm">
+                    No
+                  </label>
+                </div>
+              </div>
+            )}
+          />
+          {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
+
           
 
          
