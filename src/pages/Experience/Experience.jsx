@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
-import { useForm, Controller } from 'react-hook-form';
-import Select from 'react-select';
-import { components } from 'react-select';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
+import { Link, useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import Select from "react-select";
+import { components } from "react-select";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import Header from "../../components/Header";
 import experience from "../../assets/experience.svg";
@@ -17,36 +16,32 @@ import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 
 const schema = yup.object().shape({
-  levelOfKnowledge: yup.object().required('Level of Knowledge is required'),
-  chooseYourCharacter: yup.object().required('Character is required'),
-  participation: yup.string().required('This field is required'),
+  levelOfKnowledge: yup.object().required("Level of Knowledge is required"),
+  chooseYourCharacter: yup.object().required("Character is required"),
+  participation: yup.string().required("This field is required"),
 });
-
 
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
-    color: state.isSelected ? '#000000' : '#647196',
-    backgroundColor: state.isSelected ? 'rgba(58, 67, 116, 0.15)' : '#ffffff',
+    color: state.isSelected ? "#000000" : "#647196",
+    backgroundColor: state.isSelected ? "rgba(58, 67, 116, 0.15)" : "#ffffff",
   }),
-  
+
   control: () => ({
-    backgroundColor: 'transparent',
-    display: 'flex',
-    color: 'white',
-    border: 'none',
+    backgroundColor: "transparent",
+    display: "flex",
+    color: "white",
+    border: "none",
   }),
-  indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: (styles) => ({ ...styles, color: '#FFFFFF' }),
+  indicatorSeparator: () => ({ display: "none" }),
+  dropdownIndicator: (styles) => ({ ...styles, color: "#FFFFFF" }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
-  
-
 
     return {
       ...provided,
       opacity,
-    
     };
   },
 };
@@ -56,7 +51,11 @@ const DropdownIndicator = (props) => {
     components.DropdownIndicator && (
       <components.DropdownIndicator {...props}>
         {props.selectProps.menuIsOpen ? (
-          <img src={arrow} alt="arrow" style={{ transform: "rotate(180deg)" }} />
+          <img
+            src={arrow}
+            alt="arrow"
+            style={{ transform: "rotate(180deg)" }}
+          />
         ) : (
           <img src={arrow} alt="arrow" style={{ transform: "rotate(0deg)" }} />
         )}
@@ -65,37 +64,38 @@ const DropdownIndicator = (props) => {
   );
 };
 
-
 export default function Experience() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
   const CustomOption = ({ data, ...props }) => (
     <components.Option {...props}>
-    <div className="flex justify-between items-center w-full px-2 py-1 hover:bg-slate-200 hover:font-semibold">
-      <span  className="flex items-center">{data.label}</span>
-      <img src={data.image} alt={data.label} className="ml-2" />
-    </div>
-  </components.Option>
-);
-  
+      <div className="flex justify-between items-center w-full px-2 py-1 hover:bg-slate-200 hover:font-semibold">
+        <span className="flex items-center">{data.label}</span>
+        <img src={data.image} alt={data.label} className="ml-2" />
+      </div>
+    </components.Option>
+  );
+
   const OptionList = [
     { value: "magnus_carlsen", label: "Magnus Carlsen", image: magnus },
     { value: "wilhelm_steinitz", label: "Wilhelm Steinitz", image: wilhelm },
-    { value: "bobby_fischer", label: "Bobby Fischer", image: bobby},
+    { value: "bobby_fischer", label: "Bobby Fischer", image: bobby },
     { value: "another_player", label: "Another Player", image: bobby1 },
   ];
 
-
-  const { handleSubmit, control, formState: { errors } } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    navigate('/completed'); // Navigate to completed page after form submission
+    navigate("/completed"); // Navigate to completed page after form submission
   };
 
   return (
@@ -133,22 +133,23 @@ export default function Experience() {
             <p>Chess experience</p>
           </div>
 
-          <p className="text-3xl mb-[3px] leading-normal font-semibold">Chess experience</p>
-          <p className="capitalize mb-[105px]">This is basic information fields</p>
+          <p className="text-3xl mb-[3px] leading-normal font-semibold">
+            Chess experience
+          </p>
+          <p className="capitalize mb-[105px]">
+            This is basic information fields
+          </p>
 
-    <form  onSubmit={handleSubmit(onSubmit)}>
-          <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
-
-          
-              <Controller 
-              
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
+              <Controller
                 name="levelOfKnowledge"
                 control={control}
-                rules={{ required: 'Level of Knowledge is required' }}
+                rules={{ required: "Level of Knowledge is required" }}
                 render={({ field }) => (
                   <div className="w-[24.5rem] ">
                     <Select
-                    styles={customStyles}
+                      styles={customStyles}
                       {...field}
                       placeholder="Level of Knowledge *"
                       options={[
@@ -157,62 +158,66 @@ export default function Experience() {
                         { value: "professional", label: "Professional" },
                       ]}
                       components={{ DropdownIndicator }}
-                      onChange={value => field.onChange(value)}
+                      onChange={(value) => field.onChange(value)}
                       onBlur={field.onBlur}
                       value={field.value}
-                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${errors.levelOfKnowledge ? 'border-red-500' : 'border-slate-300'}`}
+                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                        errors.levelOfKnowledge
+                          ? "border-red-500"
+                          : "border-slate-300"
+                      }`}
                     />
-                    {errors.levelOfKnowledge && <p className="text-red-500">{errors.levelOfKnowledge.message}</p>}
+                    {errors.levelOfKnowledge && (
+                      <p className="text-red-500">
+                        {errors.levelOfKnowledge.message}
+                      </p>
+                    )}
                   </div>
                 )}
               />
-              
-
-
-
 
               <Controller
                 name="chooseYourCharacter"
                 control={control}
-                rules={{ required: 'Character is required' }}
+                rules={{ required: "Character is required" }}
                 render={({ field }) => (
                   <div className="w-[24.5rem]">
-                  
                     <Select
                       styles={customStyles}
-                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${errors.chooseYourCharacter ? 'border-red-500' : 'border-slate-300'}`}
+                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                        errors.chooseYourCharacter
+                          ? "border-red-500"
+                          : "border-slate-300"
+                      }`}
                       {...field}
                       placeholder="Choose your character *"
                       options={OptionList}
                       components={{
-                        Option: CustomOption,DropdownIndicator
+                        Option: CustomOption,
+                        DropdownIndicator,
                       }}
-                      
-                      onChange={value => field.onChange(value)}
+                      onChange={(value) => field.onChange(value)}
                       onBlur={field.onBlur}
                       value={field.value}
-                      
                     />
-                    
-                    {errors.chooseYourCharacter && <p className="text-red-500">{errors.chooseYourCharacter.message}</p>}
+
+                    {errors.chooseYourCharacter && (
+                      <p className="text-red-500">
+                        {errors.chooseYourCharacter.message}
+                      </p>
+                    )}
                   </div>
                 )}
               />
+            </div>
 
-
-
-
-
-          </div>
-
-          
-          <span>Have you participated in the Redberry Championship?</span>
-          <span className="text-red-500 ml-[4px]"> *</span>
-          <Controller
+            <span>Have you participated in the Redberry Championship?</span>
+            <span className="text-red-500 ml-[4px]"> *</span>
+            <Controller
               control={control}
               name="participation"
               defaultValue=""
-              rules={{ required: 'This field is required' }}
+              rules={{ required: "This field is required" }}
               render={({ field }) => (
                 <div className="flex items-center mt-[20px]">
                   <div className="mr-4">
@@ -242,27 +247,24 @@ export default function Experience() {
                 </div>
               )}
             />
-            {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
-          
+            {errors.participation && (
+              <p className="text-red-500">{errors.participation.message}</p>
+            )}
 
-         
-          
-
-          
-          <div className="w-[100%] mt-[174px] flex row justify-between">
-            <Link
-              to="/personal"
-              className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-            >
-              Back
-            </Link>
-            <button
-            type="submit"
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-          >
-            Done
-          </button>
-          </div>
+            <div className="w-[100%] mt-[174px] flex row justify-between">
+              <Link
+                to="/personal"
+                className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              >
+                Back
+              </Link>
+              <button
+                type="submit"
+                className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+              >
+                Done
+              </button>
+            </div>
           </form>
         </div>
       </div>
