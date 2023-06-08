@@ -27,16 +27,13 @@ export default function Personal() {
     handleSubmit,
     formState: { errors, dirtyFields },
   } = useForm({ resolver: yupResolver(loginSchema) });
-  console.log(dirtyFields);
 
   const onSubmit = async (data) => {
-    console.log(data);
     navigate("/experience");
   };
 
   const clickNextBtn = () => setClick(true);
 
-  console.log(errors.email);
   return (
     <div className="flex">
       <div className="relative w-[48%]">
@@ -234,8 +231,9 @@ export default function Personal() {
                   <p className="p-3 ">{errors.date.message}</p>
                 </div>
               )}
-              {!errors.date &&
-                click(<img src={Check} alt="" className=" mx-5" />)}
+              {!errors.date && click && (
+                <img src={Check} alt="" className=" mx-5" />
+              )}
             </div>
             <div className="flex items-center justify-between font-open-sans font-normal text-xl/[27px]">
               <Link
