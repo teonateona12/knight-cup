@@ -19,7 +19,6 @@ export default function Personal() {
   const [cancelDate, setCancelDate] = useState(false);
 
   const [click, setClick] = useState(false);
-  console.log(cancelName);
 
   const navigate = useNavigate();
 
@@ -101,9 +100,8 @@ export default function Personal() {
           >
             <div
               className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
-                errors.name
-                  ? "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
-                  : null
+                errors.name &&
+                "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
               }`}
             >
               <input
@@ -115,7 +113,7 @@ export default function Personal() {
                 }`}
                 {...register("name")}
               />
-              {errors.name && dirtyFields.name && !cancelName ? (
+              {errors.name && dirtyFields.name && !cancelName && (
                 <div className="absolute top-0 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
                   <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
                     <img src={Error} alt="" />
@@ -129,18 +127,17 @@ export default function Personal() {
                   </div>
                   <p className="p-3 ">{errors.name.message}</p>
                 </div>
-              ) : null}
+              )}
 
-              {!errors.name && click ? (
+              {!errors.name && click && (
                 <img src={Check} alt="" className=" mx-5" />
-              ) : null}
+              )}
             </div>
 
             <div
               className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
-                errors.email
-                  ? "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
-                  : null
+                errors.email &&
+                "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
               }`}
             >
               <input
@@ -152,7 +149,7 @@ export default function Personal() {
                 {...register("email")}
               />
 
-              {errors.email && dirtyFields.email && !cancelMail ? (
+              {errors.email && dirtyFields.email && !cancelMail && (
                 <div
                   className={`absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] `}
                 >
@@ -168,16 +165,16 @@ export default function Personal() {
                   </div>
                   <p className="p-3 ">{errors.email.message}</p>
                 </div>
-              ) : null}
+              )}
 
-              {!errors.email && click ? (
+              {!errors.email && click && (
                 <img src={Check} alt="" className="mx-5" />
-              ) : null}
+              )}
             </div>
 
             <div
               className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
-                errors.tel ? "bg-light-red" : null
+                errors.tel && "bg-light-red"
               }`}
             >
               <input
@@ -189,7 +186,7 @@ export default function Personal() {
                 {...register("tel")}
               />
 
-              {errors.tel && dirtyFields.tel && !cancelTel ? (
+              {errors.tel && dirtyFields.tel && !cancelTel && (
                 <div className="absolute top-40 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
                   <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
                     <img src={Error} alt="" />
@@ -203,15 +200,15 @@ export default function Personal() {
                   </div>
                   <p className="p-3 ">{errors.tel.message}</p>
                 </div>
-              ) : null}
-              {!errors.tel && click ? (
+              )}
+              {!errors.tel && click && (
                 <img src={Check} alt="" className="mx-5" />
-              ) : null}
+              )}
             </div>
 
             <div
               className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
-                errors.date ? "bg-light-red" : null
+                errors.date && "bg-light-red"
               }`}
             >
               <input
@@ -222,7 +219,7 @@ export default function Personal() {
                 {...register("date")}
               />
 
-              {errors.date && dirtyFields.date && !cancelDate ? (
+              {errors.date && dirtyFields.date && !cancelDate && (
                 <div className="absolute top-60 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
                   <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
                     <img src={Error} alt="" />
@@ -236,16 +233,11 @@ export default function Personal() {
                   </div>
                   <p className="p-3 ">{errors.date.message}</p>
                 </div>
-              ) : null}
-              {!errors.date && click ? (
-                <img src={Check} alt="" className=" mx-5" />
-              ) : null}
+              )}
+              {!errors.date &&
+                click(<img src={Check} alt="" className=" mx-5" />)}
             </div>
             <div className="flex items-center justify-between font-open-sans font-normal text-xl/[27px]">
-              {/* <button className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]">
-                <Link to={"/"}>Back</Link>
-              </button>*/}
-
               <Link
                 to={"/"}
                 className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]"
