@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { components } from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useDispatch } from 'react-redux'; // import useDispatch
+import { useDispatch,useSelector } from 'react-redux'; 
 
 
 import Header from "../../components/Header";
@@ -16,7 +16,7 @@ import check from "../../assets/check.png";
 import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
-import { updateName, updateEmail, updatePhone, updateDateOfBirth, updateExperienceLevel, updateAlreadyParticipated, updateCharacterId } from '../../store/userSlice';
+import { updateData } from '../../store/userSlice';
 
 
 
@@ -105,24 +105,23 @@ export default function Experience() {
 });
 
 
-
+const userData = useSelector((state)=>
+  state.user
+)
+console.log(userData)
 
   const onSubmit = async (data) => {
-    dispatch(updateName(data.name));
-    dispatch(updateEmail(data.email));
-    dispatch(updatePhone(data.phone));
-    dispatch(updateDateOfBirth(data.date_of_birth));
-    dispatch(updateExperienceLevel(data.levelOfKnowledge.value));
-    dispatch(updateAlreadyParticipated(data.participation === 'yes'));
-    dispatch(updateCharacterId(data.chooseYourCharacter.value));
 
-    localStorage.setItem('levelOfKnowledge', JSON.stringify(data.levelOfKnowledge));
-    localStorage.setItem('chooseYourCharacter', JSON.stringify(data.chooseYourCharacter));
-    localStorage.setItem('participation', data.participation);
+    
+    dispatch(updateData({property:"already_participated",value:data.participation.value}));
+    dispatch(updateData({property:"character_id",value:data.chooseYourCharacter.value}));
+ 
+    localStorage.setItem('user', JSON.stringify(userData));
+ 
 
 
 
-    console.log(data);
+ 
     navigate('/completed'); // Navigate to completed page after form submission
   };
   React.useEffect(() => {
@@ -193,7 +192,8 @@ export default function Experience() {
                         { value: "professional", label: "Professional" },
                       ]}
                       components={{ DropdownIndicator }}
-                      onChange={value => field.onChange(value)}
+                      onChange={(e)=>{value => field.onChange(value),dispatch(updateData({property:"experience_level",value:e.target.value}));}}
+                      
                       onBlur={field.onBlur}
                       value={field.value}
                       className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${errors.levelOfKnowledge ? 'border-red-500' : 'border-slate-300'}`}
@@ -257,7 +257,7 @@ export default function Experience() {
                     type="radio"
                     id="yesOption"
                     value="yes"
-                    checked={field.value === 'yes'} // this will check if the value of the radio button is 'yes'
+                    checked={field.value === 'yes'} 
                     className="form-radio text-blue-500 h-4 w-4"
                   />
                   <label htmlFor="yesOption" className="ml-2 text-sm">
@@ -270,7 +270,7 @@ export default function Experience() {
                     type="radio"
                     id="noOption"
                     value="no"
-                    checked={field.value === 'no'} // this will check if the value of the radio button is 'no'
+                    checked={field.value === 'no'} 
                     className="form-radio text-blue-500 h-4 w-4"
                   />
                   <label htmlFor="noOption" className="ml-2 text-sm">

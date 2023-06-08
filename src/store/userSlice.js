@@ -8,42 +8,16 @@ const userSlice = createSlice({
     phone: "",
     date_of_birth: "",
     experience_level: "",
-    already_participated: false,
+    already_participated: null,
     character_id: null,
   },
   reducers: {
-    updateName: (state, action) => {
-      state.name = action.payload;
-    },
-    updateEmail: (state, action) => {
-      state.email = action.payload;
-    },
-    updatePhone: (state, action) => {
-      state.phone = action.payload;
-    },
-    updateDateOfBirth: (state, action) => {
-      state.date_of_birth = action.payload;
-    },
-    updateExperienceLevel: (state, action) => {
-      state.experience_level = action.payload;
-    },
-    updateAlreadyParticipated: (state, action) => {
-      state.already_participated = action.payload;
-    },
-    updateCharacterId: (state, action) => {
-      state.character_id = action.payload;
+    updateData: (state, action) => {
+      state[action.payload.property] = action.payload.value;
     },
   },
 });
 
-export const {
-  updateName,
-  updateEmail,
-  updatePhone,
-  updateDateOfBirth,
-  updateExperienceLevel,
-  updateAlreadyParticipated,
-  updateCharacterId,
-} = userSlice.actions;
+export const { updateData } = userSlice.actions;
 
 export default userSlice.reducer;
