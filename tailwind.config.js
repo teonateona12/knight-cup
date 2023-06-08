@@ -9,6 +9,7 @@ export default {
       },
       colors: {
         black: "#212529",
+        "light-red": "#FFEFEF",
       },
     },
   },
