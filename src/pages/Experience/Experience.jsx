@@ -100,36 +100,28 @@ export default function Experience() {
     defaultValues: {
       levelOfKnowledge: JSON.parse(localStorage.getItem('levelOfKnowledge')),
       chooseYourCharacter: JSON.parse(localStorage.getItem('chooseYourCharacter')),
-     
+      participation: localStorage.getItem('participation')
     }
 });
 
 
-const userData = useSelector((state)=>
-  state.user
-)
-console.log(userData)
-
-  const onSubmit = async (data) => {
-
-    
-    dispatch(updateData({property:"already_participated",value:data.participation.value}));
-    dispatch(updateData({property:"character_id",value:data.chooseYourCharacter.value}));
- 
-    localStorage.setItem('user', JSON.stringify(userData));
- 
 
 
+const onSubmit = async (data) => {
+  dispatch(updateData({property:"already_participated",value:data.participation}));
+  
+  
+  localStorage.setItem('participation', data.participation); // Save participation to local storage
 
- 
-    navigate('/completed'); // Navigate to completed page after form submission
-  };
-  React.useEffect(() => {
-    const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
-    const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
-    const participation = localStorage.getItem('participation'); 
+  navigate('/completed'); // Navigate to completed page after form submission
+};
 
-    reset({ levelOfKnowledge, chooseYourCharacter, participation });
+React.useEffect(() => {
+  const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
+  const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
+  const participation = localStorage.getItem('participation');
+  
+  reset({ levelOfKnowledge, chooseYourCharacter, participation });
 }, [reset]);
   
 
@@ -192,7 +184,17 @@ console.log(userData)
                         { value: "professional", label: "Professional" },
                       ]}
                       components={{ DropdownIndicator }}
-                      onChange={(e)=>{value => field.onChange(value),dispatch(updateData({property:"experience_level",value:e.target.value}));}}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        dispatch(
+                          updateData({
+                            property: "experience_level",
+                            value: value.value,
+                          })
+                        );
+                        localStorage.setItem('levelOfKnowledge', JSON.stringify(value)); // Save levelOfKnowledge to local storage
+                      }}
+                      
                       
                       onBlur={field.onBlur}
                       value={field.value}
@@ -224,7 +226,16 @@ console.log(userData)
                         Option: CustomOption,DropdownIndicator
                       }}
                       
-                      onChange={value => field.onChange(value)}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        dispatch(
+                          updateData({
+                            property: "character_id",
+                            value: value.value,
+                          })
+                        );
+                        localStorage.setItem('chooseYourCharacter', JSON.stringify(value)); // Save levelOfKnowledge to local storage
+                      }}
                       onBlur={field.onBlur}
                       value={field.value}
                       
@@ -245,41 +256,50 @@ console.log(userData)
           <span>Have you participated in the Redberry Championship?</span>
           <span className="text-red-500 ml-[4px]"> *</span>
           <Controller
-            control={control}
-            name="participation"
-            defaultValue=""
-            rules={{ required: 'This field is required' }}
-            render={({ field }) => (
-              <div className="flex items-center mt-[20px]">
-                <div className="mr-4">
-                  <input
-                    {...field}
-                    type="radio"
-                    id="yesOption"
-                    value="yes"
-                    checked={field.value === 'yes'} 
-                    className="form-radio text-blue-500 h-4 w-4"
-                  />
-                  <label htmlFor="yesOption" className="ml-2 text-sm">
-                    Yes
-                  </label>
+              control={control}
+              name="participation"
+              defaultValue=""
+              rules={{ required: 'This field is required' }}
+              render={({ field }) => (
+                <div className="flex items-center mt-[20px]">
+                  <div className="mr-4">
+                    <input
+                      {...field}
+                      type="radio"
+                      id="yesOption"
+                      value="yes"
+                      checked={field.value === 'yes'} 
+                      onChange={(e) => {
+                        field.onChange(e)
+                        localStorage.setItem('participation', 'yes') // save to localStorage immediately
+                      }}
+                      className="form-radio text-blue-500 h-4 w-4"
+                    />
+                    <label htmlFor="yesOption" className="ml-2 text-sm">
+                      Yes
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      {...field}
+                      type="radio"
+                      id="noOption"
+                      value="no"
+                      checked={field.value === 'no'} 
+                      onChange={(e) => {
+                        field.onChange(e)
+                        localStorage.setItem('participation', 'no') // save to localStorage immediately
+                      }}
+                      className="form-radio text-blue-500 h-4 w-4"
+                    />
+                    <label htmlFor="noOption" className="ml-2 text-sm">
+                      No
+                    </label>
+                  </div>
                 </div>
-                <div>
-                  <input
-                    {...field}
-                    type="radio"
-                    id="noOption"
-                    value="no"
-                    checked={field.value === 'no'} 
-                    className="form-radio text-blue-500 h-4 w-4"
-                  />
-                  <label htmlFor="noOption" className="ml-2 text-sm">
-                    No
-                  </label>
-                </div>
-              </div>
-            )}
+              )}
           />
+
           {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
 
           
