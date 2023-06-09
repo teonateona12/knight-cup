@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link,json,useNavigate } from "react-router-dom";
 import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { components } from 'react-select';
@@ -17,6 +17,7 @@ import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 import { updateData } from '../../store/userSlice';
+import { data } from "autoprefixer";
 
 
 
@@ -73,6 +74,7 @@ const DropdownIndicator = (props) => {
 export default function Experience() {
   const navigate = useNavigate(); 
   const dispatch = useDispatch(); 
+ 
   
 
   const handleOptionChange = (event) => {
@@ -105,6 +107,9 @@ export default function Experience() {
 });
 
 
+const userData = useSelector((state)=>state.user)
+
+
 
 
 const onSubmit = async (data) => {
@@ -117,12 +122,14 @@ const onSubmit = async (data) => {
 };
 
 React.useEffect(() => {
-  const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
-  const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
-  const participation = localStorage.getItem('participation');
+  // const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
+  // const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
+  // const participation = localStorage.getItem('participation');
+
+  localStorage.setItem('user',JSON.stringify(userData))
   
-  reset({ levelOfKnowledge, chooseYourCharacter, participation });
-}, [reset]);
+  // reset({ levelOfKnowledge, chooseYourCharacter, participation });
+}, [userData]);
   
 
   return (
@@ -192,7 +199,7 @@ React.useEffect(() => {
                             value: value.value,
                           })
                         );
-                        localStorage.setItem('levelOfKnowledge', JSON.stringify(value)); // Save levelOfKnowledge to local storage
+                        // localStorage.setItem('levelOfKnowledge', JSON.stringify(value)); // Save levelOfKnowledge to local storage
                       }}
                       
                       
@@ -234,7 +241,7 @@ React.useEffect(() => {
                             value: value.value,
                           })
                         );
-                        localStorage.setItem('chooseYourCharacter', JSON.stringify(value)); // Save levelOfKnowledge to local storage
+                        // localStorage.setItem('chooseYourCharacter', JSON.stringify(value)); // Save levelOfKnowledge to local storage
                       }}
                       onBlur={field.onBlur}
                       value={field.value}
@@ -271,7 +278,13 @@ React.useEffect(() => {
                       checked={field.value === 'yes'} 
                       onChange={(e) => {
                         field.onChange(e)
-                        localStorage.setItem('participation', 'yes') // save to localStorage immediately
+                        dispatch(
+                          updateData({
+                            property: "already_participated",
+                            value: true,
+                          })
+                        );
+                        // localStorage.setItem('participation', 'yes') // save to localStorage immediately
                       }}
                       className="form-radio text-blue-500 h-4 w-4"
                     />
@@ -288,7 +301,13 @@ React.useEffect(() => {
                       checked={field.value === 'no'} 
                       onChange={(e) => {
                         field.onChange(e)
-                        localStorage.setItem('participation', 'no') // save to localStorage immediately
+                        dispatch(
+                          updateData({
+                            property: "already_participated",
+                            value: false,
+                          })
+                        );
+                        // localStorage.setItem('participation', 'no') // save to localStorage immediately
                       }}
                       className="form-radio text-blue-500 h-4 w-4"
                     />

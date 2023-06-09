@@ -15,9 +15,12 @@ const userSlice = createSlice({
     updateData: (state, action) => {
       state[action.payload.property] = action.payload.value;
     },
+    updateLocal: (state, action) => {
+      return { ...state, ...action.payload };
+    },
   },
 });
 
-export const { updateData } = userSlice.actions;
+export const { updateData, updateLocal } = userSlice.actions;
 
 export default userSlice.reducer;
