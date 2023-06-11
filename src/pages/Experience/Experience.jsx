@@ -1,31 +1,30 @@
-import React, { useState } from "react";
-import { Link,json,useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link,useNavigate } from "react-router-dom";
 import { useForm, Controller } from 'react-hook-form';
 import Select from 'react-select';
 import { components } from 'react-select';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch,useSelector } from 'react-redux'; 
-
-
 import Header from "../../components/Header";
 import experience from "../../assets/experience.svg";
-import arrow from "../../assets/arrow.png";
 import magnus from "../../assets/magnusCarlsen.png";
 import check from "../../assets/check.png";
 import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 import { updateData } from '../../store/userSlice';
-import { data } from "autoprefixer";
+
 
 
 
 const schema = yup.object().shape({
-  levelOfKnowledge: yup.object().required('Level of Knowledge is required'),
-  chooseYourCharacter: yup.object().required('Character is required'),
+  levelOfKnowledge: yup.string().required('Level of Knowledge is required'),
+  chooseYourCharacter: yup.string().required('Character is required'),
   participation: yup.string().required('This field is required'),
 });
+
+
 
 
 const customStyles = {
@@ -42,7 +41,7 @@ const customStyles = {
     border: 'none',
   }),
   indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: (styles) => ({ ...styles, color: '#FFFFFF' }),
+  dropdownIndicator: (styles) => ({ ...styles, color: 'rgba(58, 67, 116, 0.15)' }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
   
@@ -56,19 +55,6 @@ const customStyles = {
   },
 };
 
-const DropdownIndicator = (props) => {
-  return (
-    components.DropdownIndicator && (
-      <components.DropdownIndicator {...props}>
-        {props.selectProps.menuIsOpen ? (
-          <img src={arrow} alt="arrow" style={{ transform: "rotate(180deg)" }} />
-        ) : (
-          <img src={arrow} alt="arrow" style={{ transform: "rotate(0deg)" }} />
-        )}
-      </components.DropdownIndicator>
-    )
-  );
-};
 
 
 export default function Experience() {
@@ -77,60 +63,86 @@ export default function Experience() {
  
   
 
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-  const CustomOption = ({ data, ...props }) => (
-    <components.Option {...props}>
-    <div className="flex justify-between items-center w-full px-2 py-1 hover:bg-slate-200 hover:font-semibold">
-      <span  className="flex items-center">{data.label}</span>
-      <img src={data.image} alt={data.label} className="ml-2" />
-    </div>
-  </components.Option>
-);
+
   
   const OptionList = [
     { value: "magnus_carlsen", label: "Magnus Carlsen", image: magnus },
     { value: "wilhelm_steinitz", label: "Wilhelm Steinitz", image: wilhelm },
     { value: "bobby_fischer", label: "Bobby Fischer", image: bobby},
-    { value: "another_player", label: "Another Player", image: bobby1 },
+    { value: "bobby_fischer", label: "Bobby Fischer", image: bobby1},
+    
   ];
 
+  const CustomOption = ({ data, ...props }) => (
+    <components.Option {...props}>
+      <div className="flex items-center justify-between">
+        <p>{data.label}</p>
+        <img src={data.image} alt="" />
+      </div>
+    </components.Option>
+  );
+  
+  const CustomSingleValue = ({ data, ...props }) => (
+    <components.SingleValue {...props}>
+      <div>{data.label}</div>
+    </components.SingleValue>
+  );
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm({
+
+
+  const userData = useSelector((state)=>state.user)
+  
+  console.log(userData)
+ 
+
+  const { handleSubmit, control,getValues,setValue, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      levelOfKnowledge: JSON.parse(localStorage.getItem('levelOfKnowledge')),
-      chooseYourCharacter: JSON.parse(localStorage.getItem('chooseYourCharacter')),
-      participation: localStorage.getItem('participation')
-    }
+   
 });
 
 
-const userData = useSelector((state)=>state.user)
 
 
 
+console.log(getValues("levelOfKnowledge"))
 
-const onSubmit = async (data) => {
-  dispatch(updateData({property:"already_participated",value:data.participation}));
-  
-  
-  localStorage.setItem('participation', data.participation); // Save participation to local storage
+const onSubmit = async () => {
 
-  navigate('/completed'); // Navigate to completed page after form submission
+  navigate('/completed'); 
 };
 
-React.useEffect(() => {
-  // const levelOfKnowledge = JSON.parse(localStorage.getItem('levelOfKnowledge'));
-  // const chooseYourCharacter = JSON.parse(localStorage.getItem('chooseYourCharacter'));
-  // const participation = localStorage.getItem('participation');
+const [hasMounted, setHasMounted] = React.useState(false);
 
-  localStorage.setItem('user',JSON.stringify(userData))
+  React.useEffect(() => {
+    hasMounted
+      ? localStorage.setItem("user", JSON.stringify(userData))
+      : setHasMounted(true);
+  }, [userData, hasMounted]);
+
+
+  function toTitleCase(str) {
+    return str.replace(/_/g, " ").replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+}
+
+
+
+
+useEffect(() => {
   
-  // reset({ levelOfKnowledge, chooseYourCharacter, participation });
-}, [userData]);
+  const userData = JSON.parse(localStorage.getItem("user"));
+  if (userData) {
   
+    setValue('participation', userData.already_participated ? "yes":"no");
+    setValue('chooseYourCharacter', userData.character_id);
+    setValue('levelOfKnowledge', userData.experience_level);
+   
+ 
+  }
+}, [setValue]);
+
+
 
   return (
     <div className="flex">
@@ -179,32 +191,36 @@ React.useEffect(() => {
                 name="levelOfKnowledge"
                 control={control}
                 rules={{ required: 'Level of Knowledge is required' }}
-                render={({ field }) => (
+                defaultValue={userData ? userData.experience_level:""}
+                render={() => (
                   <div className="w-[24.5rem] ">
                     <Select
                     styles={customStyles}
-                      {...field}
+                     
                       placeholder="Level of Knowledge *"
                       options={[
                         { value: "beginner", label: "Beginner" },
                         { value: "intermediate", label: "Intermediate" },
                         { value: "professional", label: "Professional" },
                       ]}
-                      components={{ DropdownIndicator }}
+                    
                       onChange={(value) => {
-                        field.onChange(value);
+                        setValue("levelOfKnowledge",value.value)
+                      
                         dispatch(
                           updateData({
                             property: "experience_level",
                             value: value.value,
                           })
                         );
-                        // localStorage.setItem('levelOfKnowledge', JSON.stringify(value)); // Save levelOfKnowledge to local storage
+               
                       }}
                       
                       
-                      onBlur={field.onBlur}
-                      value={field.value}
+                    
+                      defaultValue={{value:userData.experience_level ? userData.experience_level:"",label:userData.experience_level ? userData.experience_level.charAt(0).toUpperCase()+userData.experience_level.slice(1):"level of knowledge"}}
+                  
+                      
                       className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${errors.levelOfKnowledge ? 'border-red-500' : 'border-slate-300'}`}
                     />
                     {errors.levelOfKnowledge && <p className="text-red-500">{errors.levelOfKnowledge.message}</p>}
@@ -220,34 +236,31 @@ React.useEffect(() => {
                 name="chooseYourCharacter"
                 control={control}
                 rules={{ required: 'Character is required' }}
-                render={({ field }) => (
+                render={() => (
                   <div className="w-[24.5rem]">
-                  
                     <Select
                       styles={customStyles}
                       className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${errors.chooseYourCharacter ? 'border-red-500' : 'border-slate-300'}`}
-                      {...field}
                       placeholder="Choose your character *"
                       options={OptionList}
                       components={{
-                        Option: CustomOption,DropdownIndicator
+                        Option: CustomOption,
+                        SingleValue: CustomSingleValue,
                       }}
-                      
                       onChange={(value) => {
-                        field.onChange(value);
+                        setValue("chooseYourCharacter",value.value)
+                      
                         dispatch(
                           updateData({
                             property: "character_id",
                             value: value.value,
                           })
                         );
-                        // localStorage.setItem('chooseYourCharacter', JSON.stringify(value)); // Save levelOfKnowledge to local storage
                       }}
-                      onBlur={field.onBlur}
-                      value={field.value}
-                      
-                    />
+                  
+                      defaultValue={{value:userData.character_id ? userData.character_id:"",label: userData.character_id ? toTitleCase(userData.character_id) :"Choose your character *"}}
                     
+                    />
                     {errors.chooseYourCharacter && <p className="text-red-500">{errors.chooseYourCharacter.message}</p>}
                   </div>
                 )}
@@ -262,7 +275,9 @@ React.useEffect(() => {
           
           <span>Have you participated in the Redberry Championship?</span>
           <span className="text-red-500 ml-[4px]"> *</span>
-          <Controller
+ 
+
+            <Controller
               control={control}
               name="participation"
               defaultValue=""
@@ -276,6 +291,7 @@ React.useEffect(() => {
                       id="yesOption"
                       value="yes"
                       checked={field.value === 'yes'} 
+                      defaultChecked={userData.already_participated==true}
                       onChange={(e) => {
                         field.onChange(e)
                         dispatch(
@@ -284,7 +300,7 @@ React.useEffect(() => {
                             value: true,
                           })
                         );
-                        // localStorage.setItem('participation', 'yes') // save to localStorage immediately
+                      
                       }}
                       className="form-radio text-blue-500 h-4 w-4"
                     />
@@ -307,7 +323,7 @@ React.useEffect(() => {
                             value: false,
                           })
                         );
-                        // localStorage.setItem('participation', 'no') // save to localStorage immediately
+                    
                       }}
                       className="form-radio text-blue-500 h-4 w-4"
                     />
@@ -317,9 +333,10 @@ React.useEffect(() => {
                   </div>
                 </div>
               )}
-          />
+            />
 
-          {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
+            {errors.participation && <p className="text-red-500">{errors.participation.message}</p>}
+
 
           
 
@@ -341,7 +358,7 @@ React.useEffect(() => {
             Done
           </button>
           </div>
-          </form>
+      </form>
         </div>
       </div>
     </div>
