@@ -1,9 +1,39 @@
 import React from "react";
 import Header from "../../components/Header";
+import { useForm, useController } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import loginSchema from "../../loginSchema";
 import ChessFigures from "../../assets/chess-figures.jpg";
 import Check from "../../assets/check.svg";
+import Error from "../../assets/error.svg";
+import Cancel from "../../assets/cancel.svg";
+import DoubleCheck from "../../assets/check.png";
 
 export default function Personal() {
+  const [cancelName, SetCancelName] = useState(false);
+  const [cancelMail, setCancelMail] = useState(false);
+  const [cancelTel, setcancelTel] = useState(false);
+  const [cancelDate, setCancelDate] = useState(false);
+
+  const [click, setClick] = useState(false);
+
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, dirtyFields },
+  } = useForm({ resolver: yupResolver(loginSchema) });
+
+  const onSubmit = async (data) => {
+    navigate("/experience");
+  };
+
+  const clickNextBtn = () => setClick(true);
+
   return (
     <div className="flex">
       <div className="relative w-[48%]">
@@ -25,13 +55,26 @@ export default function Personal() {
             Start creating your account
           </h3>
         </div>
-        <div>
-          <div className="flex items-center pl-[107px] mt-[60px]">
-            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
-              1
-            </p>
+        <div className="relative">
+          <div className="flex items-center pl-[107px] mt-[60px] ">
+            {!errors.name &&
+            dirtyFields.name &&
+            !errors.email &&
+            dirtyFields.email &&
+            !errors.tel &&
+            dirtyFields.tel &&
+            !errors.date &&
+            dirtyFields.date ? (
+              <div className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg bg-[#E9FAF1]">
+                <img src={DoubleCheck} />
+              </div>
+            ) : (
+              <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
+                1
+              </p>
+            )}
             <div className="w-[174px] h-px bg-[#B9B4C34D]/[0.3]"></div>
-            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px]">
+            <p className="flex items-center justify-center w-[40px] h-[40px] border border-[#E5E6E8] rounded-lg font-open-sans font-bold text-base/[25px] bg-[#F5F5F5]">
               2
             </p>
           </div>
@@ -47,51 +90,169 @@ export default function Personal() {
               This is basic informaton fields
             </p>
           </div>
-          <form action="" className="flex gap-10 flex-col pl-12 pr-[174px]">
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex gap-11 flex-col pl-12 pr-[174px]"
+          >
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.name &&
+                "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
+              }`}
+            >
               <input
                 type="text"
+                id="name"
                 placeholder="Name *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none hover:[#fff] ${
+                  errors.name ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("name")}
               />
-              <img src={Check} alt="" className="hidden mx-5" />
+              {errors.name && dirtyFields.name && !cancelName && (
+                <div className="absolute top-0 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid name</p>
+                    <img
+                      src={Cancel}
+                      alt=""
+                      className="ml-auto"
+                      onClick={() => SetCancelName(true)}
+                    />
+                  </div>
+                  <p className="p-3 ">{errors.name.message}</p>
+                </div>
+              )}
+
+              {!errors.name && click && (
+                <img src={Check} alt="" className=" mx-5" />
+              )}
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.email &&
+                "bg-light-red shadow-[inset_0_-1px_0_rgba(0, 0, 0, 0.125)]"
+              }`}
+            >
               <input
-                type="email"
+                type="text"
                 placeholder="Email address *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none ${
+                  errors.email ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("email")}
               />
-              <img src={Check} alt="" className="hidden mx-5" />
+
+              {errors.email && dirtyFields.email && !cancelMail && (
+                <div
+                  className={`absolute top-20 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] `}
+                >
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid email</p>
+                    <img
+                      src={Cancel}
+                      alt=""
+                      className="ml-auto"
+                      onClick={() => setCancelMail(true)}
+                    />
+                  </div>
+                  <p className="p-3 ">{errors.email.message}</p>
+                </div>
+              )}
+
+              {!errors.email && click && (
+                <img src={Check} alt="" className="mx-5" />
+              )}
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.tel && "bg-light-red"
+              }`}
+            >
               <input
                 type="tel"
                 placeholder="Phone number *"
-                required
-                className="w-[100%] outline-none"
+                className={`w-[100%] outline-none ${
+                  errors.tel ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("tel")}
               />
-              <img src={Check} alt="" className="hidden mx-5" />
+
+              {errors.tel && dirtyFields.tel && !cancelTel && (
+                <div className="absolute top-40 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid phone number</p>
+                    <img
+                      src={Cancel}
+                      alt=""
+                      className="ml-auto"
+                      onClick={() => setcancelTel(true)}
+                    />
+                  </div>
+                  <p className="p-3 ">{errors.tel.message}</p>
+                </div>
+              )}
+              {!errors.tel && click && (
+                <img src={Check} alt="" className="mx-5" />
+              )}
             </div>
 
-            <div className="flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded">
+            <div
+              className={`flex items-center py-2 pl-4 shadow-[inset_0_-1px_0_rgba(0,0,0,0.125)] rounded ${
+                errors.date && "bg-light-red"
+              }`}
+            >
               <input
-                type="number"
                 placeholder="Date of birth *"
-                required
-                className="w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield]"
+                className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
+                  errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
+                }`}
+                {...register("date")}
               />
-              <img src={Check} alt="" className="hidden mx-5" />
+
+              {errors.date && dirtyFields.date && !cancelDate && (
+                <div className="absolute top-60 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
+                  <div className="flex items-center gap-2 border-b border-solid border-[#000]/[0.1] py-[9.5px] px-3">
+                    <img src={Error} alt="" />
+                    <p className="text-[#DC3545]">Invalid date</p>
+                    <img
+                      src={Cancel}
+                      alt=""
+                      className="ml-auto"
+                      onClick={() => setCancelDate(true)}
+                    />
+                  </div>
+                  <p className="p-3 ">{errors.date.message}</p>
+                </div>
+              )}
+              {!errors.date && click && (
+                <img src={Check} alt="" className=" mx-5" />
+              )}
             </div>
             <div className="flex items-center justify-between font-open-sans font-normal text-xl/[27px]">
-              <button className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]">
+              <Link
+                to={"/"}
+                className="py-[12px] px-[24px] text-black border border-black rounded-lg h-[53px]"
+              >
                 Back
-              </button>
-              <button className="flex gap-3 bg-black text-[#fff] px-6 py-[13px] rounded-lg">
+              </Link>
+
+              <button
+                onClick={() => {
+                  clickNextBtn();
+                  SetCancelName(false);
+                  setCancelMail(false);
+                  setcancelTel(false);
+                  setCancelDate(false);
+                }}
+                className="flex gap-3 bg-black text-[#fff] px-6 py-[13px] rounded-lg"
+              >
                 Next
                 <svg
                   width="24"
