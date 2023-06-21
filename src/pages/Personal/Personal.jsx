@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/Header";
 import { useForm, useController } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,6 +11,8 @@ import Check from "../../assets/check.svg";
 import Error from "../../assets/error.svg";
 import Cancel from "../../assets/cancel.svg";
 import DoubleCheck from "../../assets/check.png";
+import { useDispatch, useSelector } from "react-redux";
+import { updateData } from "../../store/userSlice";
 
 export default function Personal() {
   const [cancelName, SetCancelName] = useState(false);
@@ -20,7 +22,12 @@ export default function Personal() {
 
   const [click, setClick] = useState(false);
 
+  const [hasMounted, setHasMounted] = useState(false);
+
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user);
 
   const {
     register,
@@ -33,6 +40,12 @@ export default function Personal() {
   };
 
   const clickNextBtn = () => setClick(true);
+
+  useEffect(() => {
+    hasMounted
+      ? localStorage.setItem("user", JSON.stringify(userData))
+      : setHasMounted(true);
+  }, [userData, hasMounted]);
 
   return (
     <div className="flex">
@@ -105,10 +118,17 @@ export default function Personal() {
                 type="text"
                 id="name"
                 placeholder="Name *"
+                defaultValue={userData.name}
                 className={`w-[100%] outline-none hover:[#fff] ${
                   errors.name ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                {...register("name")}
+                {...register("name", {
+                  onChange: (e) => {
+                    dispatch(
+                      updateData({ property: "name", value: e.target.value })
+                    );
+                  },
+                })}
               />
               {errors.name && dirtyFields.name && !cancelName && (
                 <div className="absolute top-0 right-9 border border-solid border-[#000]/[0.1] shadow-md rounded bg-white/[0.85] ">
@@ -140,10 +160,17 @@ export default function Personal() {
               <input
                 type="text"
                 placeholder="Email address *"
+                defaultValue={userData.email}
                 className={`w-[100%] outline-none ${
                   errors.email ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                {...register("email")}
+                {...register("email", {
+                  onChange: (e) => {
+                    dispatch(
+                      updateData({ property: "email", value: e.target.value })
+                    );
+                  },
+                })}
               />
 
               {errors.email && dirtyFields.email && !cancelMail && (
@@ -177,10 +204,17 @@ export default function Personal() {
               <input
                 type="tel"
                 placeholder="Phone number *"
+                defaultValue={userData.phone}
                 className={`w-[100%] outline-none ${
                   errors.tel ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                {...register("tel")}
+                {...register("tel", {
+                  onChange: (e) => {
+                    dispatch(
+                      updateData({ property: "phone", value: e.target.value })
+                    );
+                  },
+                })}
               />
 
               {errors.tel && dirtyFields.tel && !cancelTel && (
@@ -210,10 +244,20 @@ export default function Personal() {
             >
               <input
                 placeholder="Date of birth *"
+                defaultValue={userData.date_of_birth}
                 className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
                   errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                {...register("date")}
+                {...register("date", {
+                  onChange: (e) => {
+                    dispatch(
+                      updateData({
+                        property: "date_of_birth",
+                        value: e.target.value,
+                      })
+                    );
+                  },
+                })}
               />
 
               {errors.date && dirtyFields.date && !cancelDate && (
