@@ -35,6 +35,29 @@ export default function Personal() {
     formState: { errors, dirtyFields },
   } = useForm({ resolver: yupResolver(loginSchema) });
 
+  const handleDateChange = (event) => {
+    const { value } = event.target;
+
+    // Remove any non-digit characters from the input value
+    const sanitizedValue = value.replace(/\D/g, "");
+
+    // Format the date with slashes
+    let formattedDate = "";
+    if (sanitizedValue.length >= 3) {
+      formattedDate += `${sanitizedValue.slice(0, 2)}/`;
+      formattedDate += `${sanitizedValue.slice(2, 4)}/`;
+      formattedDate += `${sanitizedValue.slice(4, 8)}`;
+    } else if (sanitizedValue.length >= 2) {
+      formattedDate += `${sanitizedValue.slice(0, 2)}/`;
+      formattedDate += `${sanitizedValue.slice(2)}`;
+    } else if (sanitizedValue.length > 0) {
+      formattedDate += sanitizedValue;
+    }
+
+    event.target.value = formattedDate;
+    console.log(34);
+  };
+
   const onSubmit = async (data) => {
     navigate("/experience");
   };
@@ -244,10 +267,11 @@ export default function Personal() {
             >
               <input
                 placeholder="Date of birth *"
-                defaultValue={userData.date_of_birth}
+                value={userData.date_of_birth}
                 className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
                   errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
+                onChange={(e) => console.log(55555)}
                 {...register("date", {
                   onChange: (e) => {
                     dispatch(
