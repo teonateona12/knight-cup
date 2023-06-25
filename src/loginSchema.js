@@ -24,7 +24,7 @@ const loginSchema = yup.object({
     .required("Required date of birth")
     .matches(
       /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/,
-      "Please enter valid date, ex:01/31/2000"
+      "Please enter valid date: mm/dd/yyyy"
     ),
 });
 export default loginSchema;

@@ -35,8 +35,8 @@ export default function Personal() {
     formState: { errors, dirtyFields },
   } = useForm({ resolver: yupResolver(loginSchema) });
 
-  const handleDateChange = (event) => {
-    const { value } = event.target;
+  const handleDateChange = (e) => {
+    const { value } = e.target;
 
     // Remove any non-digit characters from the input value
     const sanitizedValue = value.replace(/\D/g, "");
@@ -54,7 +54,7 @@ export default function Personal() {
       formattedDate += sanitizedValue;
     }
 
-    event.target.value = formattedDate;
+    e.target.value = formattedDate;
     console.log(34);
   };
 
@@ -271,9 +271,11 @@ export default function Personal() {
                 className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
                   errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                onChange={(e) => console.log(55555)}
+                onChange={(e) => console.log(e.target)}
                 {...register("date", {
                   onChange: (e) => {
+                    handleDateChange(e);
+                    console.log(e.target.value);
                     dispatch(
                       updateData({
                         property: "date_of_birth",
