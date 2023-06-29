@@ -157,60 +157,55 @@ export default function Experience() {
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
-              <Controller
-                name="levelOfKnowledge"
-                control={control}
-                rules={{ required: "Level of Knowledge is required" }}
-                defaultValue={userData ? userData.experience_level : ""}
-                render={() => (
-                  <div className="w-[24.5rem] ">
-                    <Select
-                      styles={customStyles}
-                      placeholder="Level of Knowledge *"
-                      options={[
-                        { value: "beginner", label: "Beginner" },
-                        { value: "intermediate", label: "Intermediate" },
-                        { value: "professional", label: "Professional" },
-                      ]}
-                      onChange={(value) => {
-                        setValue("levelOfKnowledge", value.value);
+            <Controller
+              name="levelOfKnowledge"
+              control={control}
+              rules={{ required: "Level of Knowledge is required" }}
+              defaultValue={userData ? userData.experience_level : ""}
+              render={({ field }) => (
+                <div className="w-[24.5rem] ">
+                  <Select
+                    styles={customStyles}
+                    placeholder="Level of Knowledge *"
+                    options={[
+                      { value: "beginner", label: "Beginner" },
+                      { value: "intermediate", label: "Intermediate" },
+                      { value: "professional", label: "Professional" },
+                    ]}
+                    onChange={(option) => {
+                      field.onChange(option.value);
+                      dispatch(
+                        updateData({
+                          property: "experience_level",
+                          value: option.value,
+                        })
+                      );
+                    }}
+                    defaultValue={userData ? userData.experience_level : ""}
+                    className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                      errors.levelOfKnowledge
+                        ? "border-red-500"
+                        : "border-slate-300"
+                    }`}
+                  />
+                  {errors.levelOfKnowledge && (
+                    <p className="text-red-500">
+                      {errors.levelOfKnowledge.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
 
-                        dispatch(
-                          updateData({
-                            property: "experience_level",
-                            value: value.value,
-                          })
-                        );
-                      }}
-                      defaultValue={{
-                        value: userData.experience_level
-                          ? userData.experience_level
-                          : "",
-                        label: userData.experience_level
-                          ? userData.experience_level.charAt(0).toUpperCase() +
-                            userData.experience_level.slice(1)
-                          : "level of knowledge",
-                      }}
-                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                        errors.levelOfKnowledge
-                          ? "border-red-500"
-                          : "border-slate-300"
-                      }`}
-                    />
-                    {errors.levelOfKnowledge && (
-                      <p className="text-red-500">
-                        {errors.levelOfKnowledge.message}
-                      </p>
-                    )}
-                  </div>
-                )}
-              />
+
+
+
 
               <Controller
                 name="chooseYourCharacter"
                 control={control}
                 rules={{ required: "Character is required" }}
-                render={() => (
+                render={({ field }) => (
                   <div className="w-[24.5rem]">
                     <Select
                       styles={customStyles}
@@ -225,24 +220,17 @@ export default function Experience() {
                         Option: CustomOption,
                         SingleValue: CustomSingleValue,
                       }}
-                      onChange={(value) => {
-                        setValue("chooseYourCharacter", value.value);
+                      onChange={(option) => {
+                        field.onChange(option.value);
 
                         dispatch(
                           updateData({
                             property: "character_id",
-                            value: value.value,
+                            value: option.value,
                           })
                         );
                       }}
-                      defaultValue={{
-                        value: userData.character_id
-                          ? userData.character_id
-                          : "",
-                        label: userData.character_id
-                          ? toTitleCase(userData.character_id)
-                          : "Choose your character *",
-                      }}
+                      defaultValue={userData ? userData.character_id : ""}
                     />
                     {errors.chooseYourCharacter && (
                       <p className="text-red-500">
@@ -252,6 +240,7 @@ export default function Experience() {
                   </div>
                 )}
               />
+
             </div>
 
             <span>Have you participated in the Redberry Championship?</span>
