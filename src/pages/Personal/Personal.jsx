@@ -271,11 +271,11 @@ export default function Personal() {
                 className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
                   errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                onChange={(e) => console.log(e.target)}
+                
                 {...register("date", {
                   onChange: (e) => {
                     handleDateChange(e);
-                    console.log(e.target.value);
+                    
                     dispatch(
                       updateData({
                         property: "date_of_birth",
