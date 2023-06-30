@@ -14,6 +14,7 @@ import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 import { updateData } from "../../store/userSlice";
+import axios from "axios";
 
 const schema = yup.object().shape({
   levelOfKnowledge: yup.string().required("Level of Knowledge is required"),
@@ -76,6 +77,29 @@ export default function Experience() {
   );
 
   const userData = useSelector((state) => state.user);
+
+  const addUser = async () => {
+    try {
+      console.log("Sending registration request...");
+      const response = await axios.post(
+        "https://chess-tournament-api.devtest.ge/api/register",
+        {
+          name: userData.name,
+          email: userData.email,
+          phone: userData.phone,
+          date_of_birth: userData.date_of_birth,
+          experience_level: userData.experience_level,
+          already_participated: userData.already_participated,
+          character_id: userData.character_id,
+        }
+      );
+      console.log("Registration request successful!");
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Registration request failed!");
+      console.error("Error:", error);
+    }
+  };
 
   const {
     handleSubmit,
@@ -157,49 +181,45 @@ export default function Experience() {
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
-            <Controller
-              name="levelOfKnowledge"
-              control={control}
-              rules={{ required: "Level of Knowledge is required" }}
-              defaultValue={userData ? userData.experience_level : ""}
-              render={({ field }) => (
-                <div className="w-[24.5rem] ">
-                  <Select
-                    styles={customStyles}
-                    placeholder="Level of Knowledge *"
-                    options={[
-                      { value: "beginner", label: "Beginner" },
-                      { value: "intermediate", label: "Intermediate" },
-                      { value: "professional", label: "Professional" },
-                    ]}
-                    onChange={(option) => {
-                      field.onChange(option.value);
-                      dispatch(
-                        updateData({
-                          property: "experience_level",
-                          value: option.value,
-                        })
-                      );
-                    }}
-                    defaultValue={userData ? userData.experience_level : ""}
-                    className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                      errors.levelOfKnowledge
-                        ? "border-red-500"
-                        : "border-slate-300"
-                    }`}
-                  />
-                  {errors.levelOfKnowledge && (
-                    <p className="text-red-500">
-                      {errors.levelOfKnowledge.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
-
-
-
-
+              <Controller
+                name="levelOfKnowledge"
+                control={control}
+                rules={{ required: "Level of Knowledge is required" }}
+                defaultValue={userData ? userData.experience_level : ""}
+                render={({ field }) => (
+                  <div className="w-[24.5rem] ">
+                    <Select
+                      styles={customStyles}
+                      placeholder="Level of Knowledge *"
+                      options={[
+                        { value: "beginner", label: "Beginner" },
+                        { value: "intermediate", label: "Intermediate" },
+                        { value: "professional", label: "Professional" },
+                      ]}
+                      onChange={(option) => {
+                        field.onChange(option.value);
+                        dispatch(
+                          updateData({
+                            property: "experience_level",
+                            value: option.value,
+                          })
+                        );
+                      }}
+                      defaultValue={userData ? userData.experience_level : ""}
+                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                        errors.levelOfKnowledge
+                          ? "border-red-500"
+                          : "border-slate-300"
+                      }`}
+                    />
+                    {errors.levelOfKnowledge && (
+                      <p className="text-red-500">
+                        {errors.levelOfKnowledge.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
 
               <Controller
                 name="chooseYourCharacter"
@@ -226,7 +246,7 @@ export default function Experience() {
                         dispatch(
                           updateData({
                             property: "character_id",
-                            value: option.value,
+                            value: 2,
                           })
                         );
                       }}
@@ -240,7 +260,6 @@ export default function Experience() {
                   </div>
                 )}
               />
-
             </div>
 
             <span>Have you participated in the Redberry Championship?</span>
@@ -314,6 +333,7 @@ export default function Experience() {
                 Back
               </Link>
               <button
+                onClick={() => addUser()}
                 type="submit"
                 className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
               >
