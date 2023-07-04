@@ -14,6 +14,7 @@ import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 import { updateData } from "../../store/userSlice";
+import axios from "axios";
 
 const schema = yup.object().shape({
   levelOfKnowledge: yup.string().required("Level of Knowledge is required"),
@@ -86,11 +87,36 @@ export default function Experience() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  console.log(errors);
 
   console.log(getValues("levelOfKnowledge"));
 
-  const onSubmit = async () => {
-    navigate("/completed");
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "https://chess-tournament-api.devtest.ge/api/register",
+        {
+          name: userData.name,
+          phone: userData.phone,
+          email: userData.email,
+          experience_level: userData.experience_level,
+          date_of_birth: userData.date_of_birth,
+          character_id:
+            userData.character_id == "Magnus_carlsen"
+              ? 1
+              : userData.character_id == "wilhelm_steinitz"
+              ? 2
+              : userData.character_id == "bobby_fischer"
+              ? 3
+              : 4,
+          already_participated: userData.already_participated,
+        }
+      );
+      console.log(userData);
+      navigate("/completed");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const [hasMounted, setHasMounted] = React.useState(false);
@@ -157,60 +183,70 @@ export default function Experience() {
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
-            <Controller
-              name="levelOfKnowledge"
-              control={control}
-              rules={{ required: "Level of Knowledge is required" }}
-              defaultValue={userData ? userData.experience_level : ""}
-              render={({ field }) => (
-                <div className="w-[24.5rem] ">
-                  <Select
-                    styles={customStyles}
-                    placeholder="Level of Knowledge *"
-                    options={[
-                      { value: "beginner", label: "Beginner" },
-                      { value: "intermediate", label: "Intermediate" },
-                      { value: "professional", label: "Professional" },
-                    ]}
-                    onChange={(option) => {
-                      field.onChange(option.value);
-                      dispatch(
-                        updateData({
-                          property: "experience_level",
-                          value: option.value,
-                        })
-                      );
-                    }}
-                    defaultValue={userData ? userData.experience_level : ""}
-                    className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                      errors.levelOfKnowledge
-                        ? "border-red-500"
-                        : "border-slate-300"
-                    }`}
-                  />
-                  {errors.levelOfKnowledge && (
-                    <p className="text-red-500">
-                      {errors.levelOfKnowledge.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
+              <Controller
+                name="levelOfKnowledge"
+                control={control}
+                rules={{ required: "Level of Knowledge is required" }}
+                defaultValue={userData ? userData.experience_level : ""}
+                render={() => (
+                  <div className="w-[24.5rem] ">
+                    <Select
+                      styles={customStyles}
+                      placeholder="Level of Knowledge *"
+                      options={[
+                        { value: "beginner", label: "Beginner" },
+                        { value: "normal", label: "Intermediate" },
+                        { value: "professional", label: "Professional" },
+                      ]}
+                      onChange={(value) => {
+                        setValue("levelOfKnowledge", value.value);
 
-
-
-
+                        dispatch(
+                          updateData({
+                            property: "experience_level",
+                            value: value.value,
+                          })
+                        );
+                      }}
+                      defaultValue={{
+                        value: userData.experience_level
+                          ? userData.experience_level
+                          : "",
+                        label: userData.experience_level
+                          ? userData.experience_level.charAt(0).toUpperCase() +
+                            userData.experience_level.slice(1)
+                          : "level of knowledge",
+                      }}
+                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                        errors.levelOfKnowledge &&
+                        !errors.levelOfKnowledge?.ref.value
+                          ? "border-red-500"
+                          : "border-slate-300"
+                      }`}
+                    />
+                    {errors.levelOfKnowledge &&
+                    !errors.levelOfKnowledge?.ref.value ? (
+                      <p className="text-red-500">
+                        {errors.levelOfKnowledge.message}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                )}
+              />
 
               <Controller
                 name="chooseYourCharacter"
                 control={control}
                 rules={{ required: "Character is required" }}
-                render={({ field }) => (
+                render={() => (
                   <div className="w-[24.5rem]">
                     <Select
                       styles={customStyles}
                       className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                        errors.chooseYourCharacter
+                        errors.chooseYourCharacter &&
+                        !errors.chooseYourCharacter?.ref.value
                           ? "border-red-500"
                           : "border-slate-300"
                       }`}
@@ -220,27 +256,34 @@ export default function Experience() {
                         Option: CustomOption,
                         SingleValue: CustomSingleValue,
                       }}
-                      onChange={(option) => {
-                        field.onChange(option.value);
+                      onChange={(value) => {
+                        setValue("chooseYourCharacter", value.value);
 
                         dispatch(
                           updateData({
                             property: "character_id",
-                            value: option.value,
+                            value: value.value,
                           })
                         );
                       }}
-                      defaultValue={userData ? userData.character_id : ""}
+                      defaultValue={{
+                        value: userData.character_id
+                          ? userData.character_id
+                          : "",
+                        label: userData.character_id
+                          ? toTitleCase(userData.character_id)
+                          : "Choose your character *",
+                      }}
                     />
-                    {errors.chooseYourCharacter && (
-                      <p className="text-red-500">
-                        {errors.chooseYourCharacter.message}
-                      </p>
-                    )}
+                    {errors.chooseYourCharacter &&
+                      !getValues("chooseYourCharacter") && (
+                        <p className="text-red-500">
+                          {errors.chooseYourCharacter.message}
+                        </p>
+                      )}
                   </div>
                 )}
               />
-
             </div>
 
             <span>Have you participated in the Redberry Championship?</span>
@@ -260,7 +303,6 @@ export default function Experience() {
                       id="yesOption"
                       value="yes"
                       checked={field.value === "yes"}
-                      defaultChecked={userData.already_participated == true}
                       onChange={(e) => {
                         field.onChange(e);
                         dispatch(
