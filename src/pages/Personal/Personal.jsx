@@ -4,7 +4,6 @@ import { useForm, useController } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import loginSchema from "../../loginSchema";
 import ChessFigures from "../../assets/chess-figures.jpg";
 import Check from "../../assets/check.svg";
@@ -37,11 +36,7 @@ export default function Personal() {
 
   const handleDateChange = (e) => {
     const { value } = e.target;
-
-    // Remove any non-digit characters from the input value
     const sanitizedValue = value.replace(/\D/g, "");
-
-    // Format the date with slashes
     let formattedDate = "";
     if (sanitizedValue.length >= 3) {
       formattedDate += `${sanitizedValue.slice(0, 2)}/`;
@@ -53,9 +48,7 @@ export default function Personal() {
     } else if (sanitizedValue.length > 0) {
       formattedDate += sanitizedValue;
     }
-
     e.target.value = formattedDate;
-    console.log(34);
   };
 
   const onSubmit = async (data) => {
@@ -271,11 +264,10 @@ export default function Personal() {
                 className={`w-[100%] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:_textfield] ${
                   errors.date ? "text-[#DC3545] bg-light-red" : "text-black"
                 }`}
-                
                 {...register("date", {
                   onChange: (e) => {
                     handleDateChange(e);
-                    
+
                     dispatch(
                       updateData({
                         property: "date_of_birth",

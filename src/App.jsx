@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Completed from "./pages/Completed/Completed";
 import Experience from "./pages/Experience/Experience";
 import Landing from "./pages/Landing/Landing";
@@ -11,7 +11,7 @@ export default function App() {
   const [checkStorage, setCheckStorage] = useState(false);
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       dispatch(updateLocal(user));

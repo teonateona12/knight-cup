@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
@@ -14,20 +14,19 @@ import wilhelm from "../../assets/wilhelm.png";
 import bobby from "../../assets/bobby.png";
 import bobby1 from "../../assets/bobby1.png";
 import { updateData } from "../../store/userSlice";
+import axios from "axios";
 
 const schema = yup.object().shape({
   levelOfKnowledge: yup.string().required("Level of Knowledge is required"),
   chooseYourCharacter: yup.string().required("Character is required"),
   participation: yup.string().required("This field is required"),
 });
-
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected ? "#000000" : "#647196",
     backgroundColor: state.isSelected ? "rgba(58, 67, 116, 0.15)" : "#ffffff",
   }),
-
   control: () => ({
     backgroundColor: "transparent",
     display: "flex",
@@ -41,25 +40,21 @@ const customStyles = {
   }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
-
     return {
       ...provided,
       opacity,
     };
   },
 };
-
 export default function Experience() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const OptionList = [
     { value: "magnus_carlsen", label: "Magnus Carlsen", image: magnus },
     { value: "wilhelm_steinitz", label: "Wilhelm Steinitz", image: wilhelm },
     { value: "bobby_fischer", label: "Bobby Fischer", image: bobby },
     { value: "bobby_fischer", label: "Bobby Fischer", image: bobby1 },
   ];
-
   const CustomOption = ({ data, ...props }) => (
     <components.Option {...props}>
       <div className="flex items-center justify-between">
@@ -68,15 +63,12 @@ export default function Experience() {
       </div>
     </components.Option>
   );
-
   const CustomSingleValue = ({ data, ...props }) => (
     <components.SingleValue {...props}>
       <div>{data.label}</div>
     </components.SingleValue>
   );
-
   const userData = useSelector((state) => state.user);
-
   const {
     handleSubmit,
     control,
@@ -86,27 +78,44 @@ export default function Experience() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        "https://chess-tournament-api.devtest.ge/api/register",
+        {
+          name: userData.name,
+          phone: userData.phone,
+          email: userData.email,
+          experience_level: userData.experience_level,
+          date_of_birth: userData.date_of_birth,
+          character_id:
+            userData.character_id == "Magnus_carlsen"
+              ? 1
+              : userData.character_id == "wilhelm_steinitz"
+              ? 2
+              : userData.character_id == "bobby_fischer"
+              ? 3
+              : 4,
+          already_participated: userData.already_participated,
+        }
+      );
 
-  console.log(getValues("levelOfKnowledge"));
-
-  const onSubmit = async () => {
-    navigate("/completed");
+      navigate("/completed");
+    } catch (error) {
+      console.error(error);
+    }
   };
-
   const [hasMounted, setHasMounted] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
     hasMounted
       ? localStorage.setItem("user", JSON.stringify(userData))
       : setHasMounted(true);
   }, [userData, hasMounted]);
-
   function toTitleCase(str) {
     return str.replace(/_/g, " ").replace(/\w\S*/g, function (txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
-
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
@@ -115,7 +124,6 @@ export default function Experience() {
       setValue("levelOfKnowledge", userData.experience_level);
     }
   }, [setValue]);
-
   return (
     <div className="flex">
       <div className="w-[48%] relative">
@@ -157,60 +165,68 @@ export default function Experience() {
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="dropdown_container relative flex row gap-[23px] mb-[88px]">
-            <Controller
-              name="levelOfKnowledge"
-              control={control}
-              rules={{ required: "Level of Knowledge is required" }}
-              defaultValue={userData ? userData.experience_level : ""}
-              render={({ field }) => (
-                <div className="w-[24.5rem] ">
-                  <Select
-                    styles={customStyles}
-                    placeholder="Level of Knowledge *"
-                    options={[
-                      { value: "beginner", label: "Beginner" },
-                      { value: "intermediate", label: "Intermediate" },
-                      { value: "professional", label: "Professional" },
-                    ]}
-                    onChange={(option) => {
-                      field.onChange(option.value);
-                      dispatch(
-                        updateData({
-                          property: "experience_level",
-                          value: option.value,
-                        })
-                      );
-                    }}
-                    defaultValue={userData ? userData.experience_level : ""}
-                    className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                      errors.levelOfKnowledge
-                        ? "border-red-500"
-                        : "border-slate-300"
-                    }`}
-                  />
-                  {errors.levelOfKnowledge && (
-                    <p className="text-red-500">
-                      {errors.levelOfKnowledge.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
-
-
-
-
-
+              <Controller
+                name="levelOfKnowledge"
+                control={control}
+                rules={{ required: "Level of Knowledge is required" }}
+                defaultValue={userData ? userData.experience_level : ""}
+                render={() => (
+                  <div className="w-[24.5rem] ">
+                    <Select
+                      styles={customStyles}
+                      placeholder="Level of Knowledge *"
+                      options={[
+                        { value: "beginner", label: "Beginner" },
+                        { value: "normal", label: "Intermediate" },
+                        { value: "professional", label: "Professional" },
+                      ]}
+                      onChange={(value) => {
+                        setValue("levelOfKnowledge", value.value);
+                        dispatch(
+                          updateData({
+                            property: "experience_level",
+                            value: value.value,
+                          })
+                        );
+                      }}
+                      defaultValue={{
+                        value: userData.experience_level
+                          ? userData.experience_level
+                          : "",
+                        label: userData.experience_level
+                          ? userData.experience_level.charAt(0).toUpperCase() +
+                            userData.experience_level.slice(1)
+                          : "level of knowledge",
+                      }}
+                      className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
+                        errors.levelOfKnowledge &&
+                        !errors.levelOfKnowledge?.ref.value
+                          ? "border-red-500"
+                          : "border-slate-300"
+                      }`}
+                    />
+                    {errors.levelOfKnowledge &&
+                    !errors.levelOfKnowledge?.ref.value ? (
+                      <p className="text-red-500">
+                        {errors.levelOfKnowledge.message}
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                )}
+              />
               <Controller
                 name="chooseYourCharacter"
                 control={control}
                 rules={{ required: "Character is required" }}
-                render={({ field }) => (
+                render={() => (
                   <div className="w-[24.5rem]">
                     <Select
                       styles={customStyles}
                       className={`w-full h-12 text-black px-4 py-2 rounded flex justify-between items-center shadow-md border-b-2 ${
-                        errors.chooseYourCharacter
+                        errors.chooseYourCharacter &&
+                        !errors.chooseYourCharacter?.ref.value
                           ? "border-red-500"
                           : "border-slate-300"
                       }`}
@@ -220,32 +236,37 @@ export default function Experience() {
                         Option: CustomOption,
                         SingleValue: CustomSingleValue,
                       }}
-                      onChange={(option) => {
-                        field.onChange(option.value);
-
+                      onChange={(value) => {
+                        setValue("chooseYourCharacter", value.value);
                         dispatch(
                           updateData({
                             property: "character_id",
-                            value: option.value,
+                            value: value.value,
                           })
                         );
                       }}
-                      defaultValue={userData ? userData.character_id : ""}
+                      defaultValue={{
+                        value: userData.character_id
+                          ? userData.character_id
+                          : "",
+                        label: userData.character_id
+                          ? toTitleCase(userData.character_id)
+                          : "Choose your character *",
+                      }}
                     />
-                    {errors.chooseYourCharacter && (
-                      <p className="text-red-500">
-                        {errors.chooseYourCharacter.message}
-                      </p>
-                    )}
+                    {errors.chooseYourCharacter &&
+                      !getValues("chooseYourCharacter") && (
+                        <p className="text-red-500">
+                          {errors.chooseYourCharacter.message}
+                        </p>
+                      )}
                   </div>
                 )}
               />
-
             </div>
 
             <span>Have you participated in the Redberry Championship?</span>
             <span className="text-red-500 ml-[4px]"> *</span>
-
             <Controller
               control={control}
               name="participation"
@@ -260,7 +281,6 @@ export default function Experience() {
                       id="yesOption"
                       value="yes"
                       checked={field.value === "yes"}
-                      defaultChecked={userData.already_participated == true}
                       onChange={(e) => {
                         field.onChange(e);
                         dispatch(
@@ -282,7 +302,6 @@ export default function Experience() {
                       type="radio"
                       id="noOption"
                       value="no"
-                      checked={field.value === "no"}
                       onChange={(e) => {
                         field.onChange(e);
                         dispatch(
@@ -301,11 +320,9 @@ export default function Experience() {
                 </div>
               )}
             />
-
             {errors.participation && (
               <p className="text-red-500">{errors.participation.message}</p>
             )}
-
             <div className="w-[100%] mt-[174px] flex row justify-between">
               <Link
                 to="/personal"
